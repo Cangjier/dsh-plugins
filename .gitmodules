@@ -18,3 +18,7 @@
 	path = video-factory
 	url = https://github.com/Cangjier/video-factory.git
 	branch = main
+[submodule "dsh-tts"]
+	path = dsh-tts
+	url = https://github.com/Cangjier/dsh-tts.git
+	branch = main

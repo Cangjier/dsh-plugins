@@ -12,10 +12,11 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 | [`dsh-computer-use/`](dsh-computer-use) | dsh-computer-use | 把屏幕、鼠标、键盘与屏幕文字定位变成一等工具。插件只做确定性动作（看、点、打字、找字），判断全部归 DSH。仅 Windows。 |
 | [`dsh-mail-notify/`](dsh-mail-notify) | dsh-mail-notify | 把 agent 的每一轮回答和你的邮箱接起来，双向：结束时发通知邮件，回复邮件又能起一轮新对话。 |
 | [`dsh-ocr/`](dsh-ocr) | dsh-ocr | 读出图里每一行的内容、置信度与像素框；反过来也能给一段文字，返回它在图上的中心点（可直接点击）。 |
+| [`dsh-tts/`](dsh-tts) | dsh-tts | 文字变声音，引擎留在插件之外：默认走 Edge 朗读（免 Key、带逐词时间戳），或把任意本地 TTS 命令行用模板接进来。一段话出「音频 + 时间戳侧车」，多人脚本出「每行一个文件 + 一条采样级时间线」。 |
 | [`dsh-video-audio/`](dsh-video-audio) | dsh-video-audio | 造声音、修声音、量声音。只做「同输入必得同输出」的事，且只报数字、不出判断。 |
 | [`video-factory/`](video-factory) | video-factory | 素材进，成片出。把图片、视频片段、音乐和一段文案变成一条能直接发布的 mp4；同样只提供确定性工具，流程与创作决策归 DSH。 |
 
-前四个是 `dsh-` 前缀的独立插件；`video-factory` 名字没有前缀，但同样是 DSH 插件，一并收在这里。
+前五个是 `dsh-` 前缀的独立插件；`video-factory` 名字没有前缀，但同样是 DSH 插件，一并收在这里。
 
 ## 快速开始
 
@@ -216,7 +217,7 @@ git submodule update --init --recursive
 
 ```sh
 git submodule update --remote --merge
-git add dsh-computer-use dsh-mail-notify dsh-ocr dsh-video-audio video-factory   # 只加子模块指针
+git add dsh-computer-use dsh-mail-notify dsh-ocr dsh-tts dsh-video-audio video-factory   # 只加子模块指针
 git commit -m "chore: 更新插件子模块到各自 main 最新提交"
 git push
 ```
