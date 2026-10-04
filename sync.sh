@@ -6,9 +6,13 @@
 #
 #   1. git submodule update --init --recursive   确保子模块都在
 #   2. git submodule update --remote --merge     每个子模块快进到 origin/main
-#   3. 报告哪些插件动了
+#   3. 报告哪些插件的 pin 动了
 #
-# 默认只改工作区、不提交；加 --commit 才提交这次 pin 变更。
+# 默认只改工作区、不提交；加 --commit 才提交这次 pin 变更，而且只提交子模块指针，
+# 仓库里别的无关改动不会被顺手带进去。
+#
+# （如果只是想让子模块对齐到父仓库已经记录的 commit，那不需要这个脚本——
+# 本机设了 submodule.recurse=true 之后，git pull 自己就会做。）
 #
 # 用法：
 #   ./sync.sh
@@ -33,6 +37,14 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# 子模块路径取自 .gitmodules。后面只 stage 这些路径，
+# 免得把父仓库里别的手改/未跟踪文件一起提交进去。
+sub_paths=$(git config -f .gitmodules --get-regexp '^submodule\..*\.path$' | awk '{print $2}')
+if [ -z "$sub_paths" ]; then
+    echo '.gitmodules 里没有子模块' >&2
+    exit 1
+fi
+
 echo '1/2 初始化并拉取子模块…'
 git submodule update --init --recursive
 
@@ -43,15 +55,18 @@ if ! git submodule update --remote --merge; then
     exit 1
 fi
 
-if [ -z "$(git status --porcelain)" ]; then
+# 判断 pin 有没有动用 git submodule summary：干净时它没有输出。
+# 不要用 git status —— 那会把父仓库里任何无关改动都算成「pin 变了」。
+summary=$(git submodule summary || true)
+if [ -z "$summary" ]; then
     echo
     echo '所有插件都已经是最新，没有 pin 变化。'
     exit 0
 fi
 
 echo
-echo '这些插件的 pin 变了：'
-git submodule summary
+echo '这些插件的 pin 变了（父仓库记录的还是旧 commit）：'
+printf '  %s\n' "$summary"
 
 if [ "$commit" -eq 0 ]; then
     echo
@@ -60,7 +75,9 @@ if [ "$commit" -eq 0 ]; then
 fi
 
 [ -n "$msg" ] || msg='chore: 更新插件子模块到各自 main 最新提交'
-git add --all
+# 故意不加引号：让 $sub_paths 按空白拆成多个路径，路径里没有空格。
+# shellcheck disable=SC2086
+git add -- $sub_paths
 git commit -m "$msg"
 
 echo

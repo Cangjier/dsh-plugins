@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
     克隆 dsh-plugins，并把所有插件子模块一次拉全。
