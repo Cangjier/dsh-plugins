@@ -112,6 +112,27 @@ gcl() { git clone --recurse-submodules "$@"; }
 
 以后 `gcl <url>` 就是全量克隆。
 
+**4. 让 `git clone` 本身就自动递归**——在 shell 层面给 `git` 套一层，只有 `clone`
+会被补上 `--recurse-submodules`，其他子命令原样转发。PowerShell 的 `$PROFILE` 里：
+
+```powershell
+$RealGit = (Get-Command git.exe -CommandType Application).Source
+
+function git {
+    $a = @($args)
+    if ($a.Count -ge 1 -and "$($a[0])" -eq 'clone' -and
+        -not ($a -match '^--(no-)?recurse-submodules')) {
+        $rest = if ($a.Count -gt 1) { $a[1..($a.Count - 1)] } else { @() }
+        & $RealGit clone --recurse-submodules @rest
+        return
+    }
+    & $RealGit @a
+}
+```
+
+bash / zsh 同理，包一层 `git()` 函数即可。这样敲普通的 `git clone <url>` 就会自动拉全，
+而且只在你自己的 shell 里生效，不会写进任何仓库的 config。
+
 ### 已经 clone 了，但插件目录是空的
 
 漏了 `--recurse-submodules` 的正常现象，补一条就行：
