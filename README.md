@@ -116,7 +116,15 @@ gcl() { git clone --recurse-submodules "$@"; }
 以后 `gcl <url>` 就是全量克隆。
 
 **4. 让 `git clone` 本身就自动递归**——在 shell 层面给 `git` 套一层，只改 `clone`，
-其他子命令原样转发。PowerShell 的 `$PROFILE`（或 `profile.ps1`）里：
+其他子命令原样转发。
+
+本仓库带了现成文件 [`git-clone-wrapper.ps1`](git-clone-wrapper.ps1)，dot-source 就能用：
+
+```powershell
+. .\git-clone-wrapper.ps1
+```
+
+想让它长期生效，把该文件的内容整段粘进 `$PROFILE`（或 `profile.ps1`）。内容如下：
 
 ```powershell
 $RealGit = (Get-Command git.exe -CommandType Application).Source
