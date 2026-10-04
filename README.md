@@ -57,6 +57,9 @@ git -C ../某个别的仓库 config --get submodule.recurse     # 空
 代价是它写在 `.git/config` 里、不进版本控制，所以**重新 clone 一次就得再设一次**。
 （用上面的 `clone.ps1` / `clone.sh` 克隆，内容天然是拉全的，只是后续的 `pull` 仍需要这条设置。）
 
+如果嫌每次都要重设，看下面[第 4 招](#让-clone-也自动git-没给这个开关)：在 shell 里包一层 `git`，
+克隆时用 `-c` 自动把这条写进新仓库——同样是仓库局部、同样不碰全局，但不用再手动敲。
+
 撤销：
 
 ```sh
@@ -112,23 +115,50 @@ gcl() { git clone --recurse-submodules "$@"; }
 
 以后 `gcl <url>` 就是全量克隆。
 
-**4. 让 `git clone` 本身就自动递归**——在 shell 层面给 `git` 套一层，只有 `clone`
-会被补上 `--recurse-submodules`，其他子命令原样转发。PowerShell 的 `$PROFILE` 里：
+**4. 让 `git clone` 本身就自动递归**——在 shell 层面给 `git` 套一层，只改 `clone`，
+其他子命令原样转发。PowerShell 的 `$PROFILE`（或 `profile.ps1`）里：
 
 ```powershell
 $RealGit = (Get-Command git.exe -CommandType Application).Source
 
 function git {
     $a = @($args)
-    if ($a.Count -ge 1 -and "$($a[0])" -eq 'clone' -and
-        -not ($a -match '^--(no-)?recurse-submodules')) {
+    if ($a.Count -ge 1 -and "$($a[0])" -eq 'clone') {
         $rest = if ($a.Count -gt 1) { $a[1..($a.Count - 1)] } else { @() }
-        & $RealGit clone --recurse-submodules @rest
+
+        $mode = 'auto'          # auto | on | off
+        $hasOwnConfig = $false
+        foreach ($x in $rest) {
+            if     ("$x" -match '^--no-recurse-submodules') { $mode = 'off' }
+            elseif ("$x" -match '^--recurse-submodules')    { $mode = 'on'  }
+            if     ("$x" -match 'submodule\.recurse')       { $hasOwnConfig = $true }
+        }
+
+        $extra = @()
+        if ($mode -eq 'auto') { $extra += '--recurse-submodules' }
+        # -c 把设置写进「新仓库自己的」.git/config：它以后 git pull 也会自动更新子模块。
+        # 只影响新克隆出来的这一个仓库，不碰全局配置，也不动任何已有仓库。
+        if ($mode -ne 'off' -and -not $hasOwnConfig) { $extra += @('-c', 'submodule.recurse=true') }
+
+        & $RealGit clone @extra @rest
         return
     }
     & $RealGit @a
 }
 ```
+
+这样敲普通的 `git clone <url>` 就会自动拉全子模块，**而且新仓库之后的 `git pull` 也会自动更新子模块**
+（靠 `-c` 写进它自己的 `.git/config`）。整个机制只在你自己的 shell 里生效，不写进全局配置，
+也不影响任何已有仓库。bash / zsh 同理，包一层 `git()` 函数即可。
+
+行为规则，避免和你显式写的参数打架：
+
+| 你敲的 | 效果 |
+| --- | --- |
+| `git clone <url>` | 补 `--recurse-submodules`，并给新仓库设 `submodule.recurse=true` |
+| `git clone --recurse-submodules <url>` | 只给新仓库设 `submodule.recurse=true` |
+| `git clone --no-recurse-submodules <url>` | 什么都不加，完全按你的意思 |
+| 自己写了 `submodule.recurse=...` | 不覆盖 |
 
 bash / zsh 同理，包一层 `git()` 函数即可。这样敲普通的 `git clone <url>` 就会自动拉全，
 而且只在你自己的 shell 里生效，不会写进任何仓库的 config。
