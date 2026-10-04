@@ -1,0 +1,17 @@
+# 统一换行：仓库里存 LF，检出时按平台转换。
+* text=auto
+
+# 下面这些必须是 LF，否则在 Windows 上会坏掉：
+# .gitmodules 被 git 逐行解析；.sh 的 shebang 和行尾一旦变成 CRLF 就没法执行。
+.gitmodules text eol=lf
+*.sh       text eol=lf
+
+# PowerShell 脚本用 CRLF，给 Windows 上的记事本和旧版 PowerShell 省事。
+*.ps1      text eol=crlf
+
+# 二进制，别碰。
+*.png binary
+*.jpg binary
+*.wav binary
+*.mp3 binary
+*.mp4 binary

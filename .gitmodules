@@ -1,0 +1,16 @@
+[submodule "dsh-computer-use"]
+	path = dsh-computer-use
+	url = https://github.com/Cangjier/dsh-computer-use.git
+	branch = main
+[submodule "dsh-mail-notify"]
+	path = dsh-mail-notify
+	url = https://github.com/Cangjier/dsh-mail-notify.git
+	branch = main
+[submodule "dsh-ocr"]
+	path = dsh-ocr
+	url = https://github.com/Cangjier/dsh-ocr.git
+	branch = main
+[submodule "dsh-video-audio"]
+	path = dsh-video-audio
+	url = https://github.com/Cangjier/dsh-video-audio.git
+	branch = main
