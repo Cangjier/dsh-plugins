@@ -168,6 +168,22 @@ function git {
 | `git clone --no-recurse-submodules <url>` | 什么都不加，完全按你的意思 |
 | 自己写了 `submodule.recurse=...` | 不覆盖 |
 
+### cmd / 批处理里怎么办
+
+上面这招靠的是 **PowerShell 的 profile，在 cmd 里完全不生效**——打开 cmd 敲 `git clone`
+不会自动递归子模块，而 cmd 没有等价的钩子可用（要让 cmd 里裸的 `git clone` 自动递归，
+只能放一个 `git.cmd` 去盖掉 `git.exe`，那会影响你机器上每一个调用 git 的程序，不值得）。
+
+想少打字，就在 PATH 上放一个 `gcl.cmd`：
+
+```bat
+@echo off
+git clone --recurse-submodules -c submodule.recurse=true %*
+```
+
+以后 `gcl <url> [目录]` 就等于拉全子模块。注意 `.cmd` 要存成**不带 BOM** 的编码，
+否则第一行 `@echo off` 前面多出三个字节，cmd 会直接报「不是内部或外部命令」。
+
 bash / zsh 同理，包一层 `git()` 函数即可。这样敲普通的 `git clone <url>` 就会自动拉全，
 而且只在你自己的 shell 里生效，不会写进任何仓库的 config。
 
