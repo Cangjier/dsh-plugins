@@ -14,3 +14,7 @@
 	path = dsh-video-audio
 	url = https://github.com/Cangjier/dsh-video-audio.git
 	branch = main
+[submodule "video-factory"]
+	path = video-factory
+	url = https://github.com/Cangjier/video-factory.git
+	branch = main

@@ -13,6 +13,9 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 | [`dsh-mail-notify/`](dsh-mail-notify) | dsh-mail-notify | 把 agent 的每一轮回答和你的邮箱接起来，双向：结束时发通知邮件，回复邮件又能起一轮新对话。 |
 | [`dsh-ocr/`](dsh-ocr) | dsh-ocr | 读出图里每一行的内容、置信度与像素框；反过来也能给一段文字，返回它在图上的中心点（可直接点击）。 |
 | [`dsh-video-audio/`](dsh-video-audio) | dsh-video-audio | 造声音、修声音、量声音。只做「同输入必得同输出」的事，且只报数字、不出判断。 |
+| [`video-factory/`](video-factory) | video-factory | 素材进，成片出。把图片、视频片段、音乐和一段文案变成一条能直接发布的 mp4；同样只提供确定性工具，流程与创作决策归 DSH。 |
+
+前四个是 `dsh-` 前缀的独立插件；`video-factory` 名字没有前缀，但同样是 DSH 插件，一并收在这里。
 
 ## 快速开始
 
@@ -30,25 +33,38 @@ Windows 上也可以直接用附带的脚本（效果一样，省得记参数）
 ./clone.sh
 ```
 
-## 让 pull 永久自动
+## 让 pull 自动更新子模块（只影响这一个仓库）
 
-`git pull` 可以做到完全不用管子模块，在本机敲一次：
+`git pull` 可以做到完全不用管子模块，在本仓库里敲一次：
 
 ```sh
-git config --global submodule.recurse true
+cd dsh-plugins
+git config submodule.recurse true      # 注意：没有 --global
 ```
 
-以后 `git pull` 会自动带上 `--recurse-submodules`：先把子模块缺的 commit 取回来，
+**去掉 `--global` 是关键**：这条只写进 `dsh-plugins/.git/config`，本机其他仓库一律不受影响——
+包括那些自己带子模块、而你并不希望它递归的仓库。可以这样确认：
+
+```sh
+git config --get submodule.recurse                        # 在 dsh-plugins 里：true
+git -C ../某个别的仓库 config --get submodule.recurse     # 空
+```
+
+之后 `git pull` 会自动带上 `--recurse-submodules`：先把子模块缺的 commit 取回来，
 再把工作区对齐到父仓库钉住的那个 commit。`checkout` / `switch` / `fetch` / `reset` /
 `restore` / `grep` / `push` 也一并生效。
+
+代价是它写在 `.git/config` 里、不进版本控制，所以**重新 clone 一次就得再设一次**。
+（用上面的 `clone.ps1` / `clone.sh` 克隆，内容天然是拉全的，只是后续的 `pull` 仍需要这条设置。）
 
 撤销：
 
 ```sh
-git config --global --unset submodule.recurse
+git config --unset submodule.recurse
 ```
 
-只想对这一个仓库生效，就把 `--global` 去掉，在仓库里跑。
+如果你确实想让本机**所有**仓库都自动递归，那才用全局形式
+`git config --global submodule.recurse true`——它会作用到每一个带子模块的仓库，请自行权衡。
 
 ## 让 clone 也自动：git 没给这个开关
 
@@ -125,7 +141,7 @@ git submodule update --init --recursive
 
 ```sh
 git submodule update --remote --merge
-git add dsh-computer-use dsh-mail-notify dsh-ocr dsh-video-audio   # 只加子模块指针
+git add dsh-computer-use dsh-mail-notify dsh-ocr dsh-video-audio video-factory   # 只加子模块指针
 git commit -m "chore: 更新插件子模块到各自 main 最新提交"
 git push
 ```
@@ -146,10 +162,11 @@ git switch main        # 从 detached HEAD 回到分支
 ## 新增一个插件
 
 ```sh
-git submodule add -b main https://github.com/Cangjier/dsh-<新插件>.git dsh-<新插件>
-git commit -m "feat: 加入 dsh-<新插件>"
+git submodule add -b main https://github.com/Cangjier/<仓库名>.git <目录名>
+git commit -m "feat: 加入 <仓库名>"
 ```
 
+目录名不必和仓库名带同样前缀（`video-factory` 就没有 `dsh-` 前缀）。
 `-b main` 会写进 `.gitmodules` 的 `branch`，`sync` 脚本靠它知道该跟哪条分支。
 
 ## 说明
