@@ -2,6 +2,10 @@
 	path = dsh-computer-use
 	url = https://github.com/Cangjier/dsh-computer-use.git
 	branch = main
+[submodule "dsh-ffmpeg"]
+	path = dsh-ffmpeg
+	url = https://github.com/Cangjier/dsh-ffmpeg.git
+	branch = main
 [submodule "dsh-mail-notify"]
 	path = dsh-mail-notify
 	url = https://github.com/Cangjier/dsh-mail-notify.git

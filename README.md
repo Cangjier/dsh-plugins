@@ -10,13 +10,56 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 | 目录 | 插件 | 做什么 |
 | --- | --- | --- |
 | [`dsh-computer-use/`](dsh-computer-use) | dsh-computer-use | 把屏幕、鼠标、键盘与屏幕文字定位变成一等工具。插件只做确定性动作（看、点、打字、找字），判断全部归 DSH。仅 Windows。 |
+| [`dsh-ffmpeg/`](dsh-ffmpeg) | dsh-ffmpeg | 把 ffmpeg 变成一套确定的、可验证的工具：转码、裁剪、抽帧、录屏，以及「一次录屏进，视频加语义结构出」。 |
 | [`dsh-mail-notify/`](dsh-mail-notify) | dsh-mail-notify | 把 agent 的每一轮回答和你的邮箱接起来，双向：结束时发通知邮件，回复邮件又能起一轮新对话。 |
 | [`dsh-ocr/`](dsh-ocr) | dsh-ocr | 读出图里每一行的内容、置信度与像素框；反过来也能给一段文字，返回它在图上的中心点（可直接点击）。 |
 | [`dsh-tts/`](dsh-tts) | dsh-tts | 文字变声音，引擎留在插件之外：默认走 Edge 朗读（免 Key、带逐词时间戳），或把任意本地 TTS 命令行用模板接进来。一段话出「音频 + 时间戳侧车」，多人脚本出「每行一个文件 + 一条采样级时间线」。 |
 | [`dsh-video-audio/`](dsh-video-audio) | dsh-video-audio | 造声音、修声音、量声音。只做「同输入必得同输出」的事，且只报数字、不出判断。 |
 | [`video-factory/`](video-factory) | video-factory | 素材进，成片出。把图片、视频片段、音乐和一段文案变成一条能直接发布的 mp4；同样只提供确定性工具，流程与创作决策归 DSH。 |
 
-前五个是 `dsh-` 前缀的独立插件；`video-factory` 名字没有前缀，但同样是 DSH 插件，一并收在这里。
+六个 `dsh-` 前缀的独立插件，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
+
+> **`dsh-ffmpeg` 是后补进子模块清单的。** 它原先只是这个目录下的一个普通检出，
+> 所以 `git status` 里显示成未跟踪、`sync.ps1` 也遍历不到它。现在它是正经子模块，
+> `clone --recurse-submodules` 与 `./sync.ps1` 都会带上它。
+
+## 共享依赖目录：`~/.dsh-plugins`
+
+六个插件都会下载二进制、模型和推理运行时。这些文件**不放在任何一个插件仓库里**，而是共用一个
+按用户主目录推导的目录：
+
+```
+~/.dsh-plugins/
+  ffmpeg/bin/            ffmpeg.exe / ffprobe.exe（约 200 MB，六个插件共用一份）
+  ocr/<来源>/            离线 OCR 引擎（dsh-ocr 装，dsh-computer-use 也能用）
+  models/yamnet/         YAMNet ONNX + 类别表（音频事件检测）
+  models/u2netp/         U²-Net 抠像模型
+  lib/onnxruntime-web/   ONNX WASM 运行时（抠像与音频事件共用一个后端）
+```
+
+为什么这么做：同一个 200 MB 的 ffmpeg 原来能通过 `../<兄弟插件>/vendor/...` 这条链被六个插件
+各自找到——只在检出并排放着时成立，单装一个插件、或者把某个检出挪走，磁盘上明明有的二进制就找
+不到了。现在只有一个具名位置。
+
+规则：
+
+- 根目录由**用户主目录**推出，不是全局变量：同一台机器上两个用户各有各的一份，谁也看不到、也
+  覆盖不了别人的 200 MB。`DSH_PLUGIN_HOME` 可以把整个根换到别处（比如 D 盘）。
+- 每个插件的查找顺序都是：**配置里的路径 → 插件自己的环境变量 → `~/.dsh-plugins/...` → 插件自己的
+  `vendor/`（旧位置）→ 同级检出（旧位置）→ `PATH`**，而且报告里永远写清是哪一条命中的。
+- 旧位置一直可读：在共享目录出现之前装过 ffmpeg、YAMNet、OCR 引擎的机器**不用重下、不用搬**。
+- 每个资产目录里仍有一份 `SOURCE.json`，记录 URL、字节数、sha256 和安装时间。
+
+### 把旧的 `vendor/` 搬进共享目录
+
+如果某个插件的 `vendor/` 里已经躺着一份（比如 `video-factory/vendor/ffmpeg`），仓库根目录带了一个
+工具把它搬进共享目录——**迁移，不是复制**，因为"同一份 200 MB 存两遍"正是要消掉的东西：
+
+```powershell
+node tools/shared-home.mjs status          # 共享目录里有什么，哪个插件还留着旧副本
+node tools/shared-home.mjs migrate         # 预演：只打印计划，不动文件
+node tools/shared-home.mjs migrate --apply # 真正搬（逐文件校验 sha256 后才删源目录）
+```
 
 ## 快速开始
 
@@ -217,7 +260,7 @@ git submodule update --init --recursive
 
 ```sh
 git submodule update --remote --merge
-git add dsh-computer-use dsh-mail-notify dsh-ocr dsh-tts dsh-video-audio video-factory   # 只加子模块指针
+git add dsh-computer-use dsh-ffmpeg dsh-mail-notify dsh-ocr dsh-tts dsh-video-audio video-factory   # 只加子模块指针
 git commit -m "chore: 更新插件子模块到各自 main 最新提交"
 git push
 ```
