@@ -13,11 +13,12 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 | [`dsh-ffmpeg/`](dsh-ffmpeg) | dsh-ffmpeg | 把 ffmpeg 变成一套确定的、可验证的工具：转码、裁剪、抽帧、录屏，以及「一次录屏进，视频加语义结构出」。 |
 | [`dsh-mail-notify/`](dsh-mail-notify) | dsh-mail-notify | 把 agent 的每一轮回答和你的邮箱接起来，双向：结束时发通知邮件，回复邮件又能起一轮新对话。 |
 | [`dsh-ocr/`](dsh-ocr) | dsh-ocr | 读出图里每一行的内容、置信度与像素框；反过来也能给一段文字，返回它在图上的中心点（可直接点击）。 |
+| [`dsh-screen-recorder/`](dsh-screen-recorder) | dsh-screen-recorder | 录屏，然后把录屏读成结构化语义：时间轴分段 + OCR 文字 + 区域语义分割 + YOLO 目标检测 + 语音转文字，融成一份带证据的 JSON。 |
 | [`dsh-tts/`](dsh-tts) | dsh-tts | 文字变声音，引擎留在插件之外：默认走 Edge 朗读（免 Key、带逐词时间戳），或把任意本地 TTS 命令行用模板接进来。一段话出「音频 + 时间戳侧车」，多人脚本出「每行一个文件 + 一条采样级时间线」。 |
 | [`dsh-video-audio/`](dsh-video-audio) | dsh-video-audio | 造声音、修声音、量声音。只做「同输入必得同输出」的事，且只报数字、不出判断。 |
 | [`video-factory/`](video-factory) | video-factory | 素材进，成片出。把图片、视频片段、音乐和一段文案变成一条能直接发布的 mp4；同样只提供确定性工具，流程与创作决策归 DSH。 |
 
-六个 `dsh-` 前缀的独立插件，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
+七个 `dsh-` 前缀的独立插件，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
 
 > **`dsh-ffmpeg` 是后补进子模块清单的。** 它原先只是这个目录下的一个普通检出，
 > 所以 `git status` 里显示成未跟踪、`sync.ps1` 也遍历不到它。现在它是正经子模块，
@@ -25,16 +26,17 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 
 ## 共享依赖目录：`~/.dsh-plugins`
 
-六个插件都会下载二进制、模型和推理运行时。这些文件**不放在任何一个插件仓库里**，而是共用一个
+七个插件都会下载二进制、模型和推理运行时。这些文件**不放在任何一个插件仓库里**，而是共用一个
 按用户主目录推导的目录：
 
 ```
 ~/.dsh-plugins/
-  ffmpeg/bin/            ffmpeg.exe / ffprobe.exe（约 200 MB，六个插件共用一份）
-  ocr/<来源>/            离线 OCR 引擎（dsh-ocr 装，dsh-computer-use 也能用）
+  ffmpeg/bin/            ffmpeg.exe / ffprobe.exe（约 200 MB，全家共用一份）
+  ocr/<来源>/            离线 OCR 引擎（dsh-ocr 装，dsh-computer-use 与 dsh-screen-recorder 也能用）
   models/yamnet/         YAMNet ONNX + 类别表（音频事件检测）
   models/u2netp/         U²-Net 抠像模型
-  lib/onnxruntime-web/   ONNX WASM 运行时（抠像与音频事件共用一个后端）
+  models/yolo/           YOLOv8n 检测权重（dsh-screen-recorder 装，约 12.8 MB）
+  lib/onnxruntime-web/   ONNX WASM 运行时（抠像、音频事件与目标检测共用一个后端）
 ```
 
 为什么这么做：同一个 200 MB 的 ffmpeg 原来能通过 `../<兄弟插件>/vendor/...` 这条链被六个插件
@@ -260,7 +262,7 @@ git submodule update --init --recursive
 
 ```sh
 git submodule update --remote --merge
-git add dsh-computer-use dsh-ffmpeg dsh-mail-notify dsh-ocr dsh-tts dsh-video-audio video-factory   # 只加子模块指针
+git add dsh-computer-use dsh-ffmpeg dsh-mail-notify dsh-ocr dsh-screen-recorder dsh-tts dsh-video-audio video-factory   # 只加子模块指针
 git commit -m "chore: 更新插件子模块到各自 main 最新提交"
 git push
 ```

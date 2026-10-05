@@ -26,3 +26,7 @@
 	path = dsh-tts
 	url = https://github.com/Cangjier/dsh-tts.git
 	branch = main
+[submodule "dsh-screen-recorder"]
+	path = dsh-screen-recorder
+	url = https://github.com/Cangjier/dsh-screen-recorder.git
+	branch = main
