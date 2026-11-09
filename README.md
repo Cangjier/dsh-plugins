@@ -20,11 +20,12 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 | [`dsh-screen-recorder/`](dsh-screen-recorder) | dsh-screen-recorder | 录屏，然后把录屏读成结构化语义：时间轴分段 + OCR 文字 + 区域语义分割 + YOLO 目标检测 + 语音转文字，融成一份带证据的 JSON。 |
 | [`dsh-tts/`](dsh-tts) | dsh-tts | 文字变声音，引擎留在插件之外：默认走 Edge 朗读（免 Key、带逐词时间戳），或把任意本地 TTS 命令行用模板接进来。一段话出「音频 + 时间戳侧车」，多人脚本出「每行一个文件 + 一条采样级时间线」。 |
 | [`dsh-video-audio/`](dsh-video-audio) | dsh-video-audio | 造声音、修声音、量声音。只做「同输入必得同输出」的事，且只报数字、不出判断。 |
+| [`dsh-wireguard/`](dsh-wireguard) | dsh-wireguard | 把 Windows 或 Linux 机器变成 WireGuard 服务器，或加入其中一个：在 Harness 面板里起服务、给设备分配 `10.66.66.x` 地址并拉通隧道，不改默认上网路由。需要 `wireguard-tools`（Windows 上是官方 WireGuard）与管理员权限。 |
 | [`video-factory/`](video-factory) | video-factory | 素材进，成片出。把图片、视频片段、音乐和一段文案变成一条能直接发布的 mp4；同样只提供确定性工具，流程与创作决策归 DSH。 |
 
-十一个 `dsh-` 前缀的子模块，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
+十二个 `dsh-` 前缀的子模块，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
 其中 `dsh-person-web` 只提供文档（`package.json` 里没有 `dsh.bundle`，`dsh plugin add` 装不成插件），
-所以下一节的 [`index.json`](index.json) 收录的是其余**十一个可安装插件**。完整清单以 [`.gitmodules`](.gitmodules) 为准。
+所以下一节的 [`index.json`](index.json) 收录的是其余**十二个可安装插件**。完整清单以 [`.gitmodules`](.gitmodules) 为准。
 
 > **`dsh-ffmpeg` 是后补进子模块清单的。** 它原先只是这个目录下的一个普通检出，
 > 所以 `git status` 里显示成未跟踪、`sync.ps1` 也遍历不到它。现在它是正经子模块，

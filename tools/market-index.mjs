@@ -48,6 +48,7 @@ const CATEGORIES = {
   media: { en: 'Video & image', zh: '视频与图像' },
   audio: { en: 'Audio & speech', zh: '音频与语音' },
   notify: { en: 'Notifications', zh: '通知与回信' },
+  network: { en: 'Network & remote access', zh: '网络与互联' },
   files: { en: 'Files & reading', zh: '文件与阅读' },
 }
 
@@ -139,6 +140,15 @@ const DISPLAY = {
     category: 'audio',
     keywords: ['audio', 'loudness', 'noise', 'recording', '音频测量'],
   },
+  'dsh-wireguard': {
+    title: { en: 'WireGuard', zh: 'WireGuard 组网' },
+    description: {
+      en: 'Turns a Windows or Linux machine into a WireGuard server, or joins it to one, from a panel in the Harness Web UI: start the service, hand out VPN addresses, and bring up local tunnels without changing the default internet route.',
+      zh: '把 Windows 或 Linux 机器变成 WireGuard 服务器，或把它加入其中一个：在 Harness Web UI 面板里启动服务、分配 VPN 地址并拉通本地隧道，不改默认上网路由。',
+    },
+    category: 'network',
+    keywords: ['wireguard', 'vpn', 'mesh', 'lan', '组网', '内网'],
+  },
   'dsh-mail-notify': {
     title: { en: 'Mail Notify', zh: '邮件通知' },
     description: {
@@ -214,9 +224,12 @@ function submoduleFacts(module, pkg) {
 
   // The commit this repository pins, not whatever the submodule happens to have
   // checked out: index.json must describe what `git clone --recurse-submodules` gives.
-  const recorded = /^160000 commit ([0-9a-f]{40})\t/u.exec(git('ls-tree', 'HEAD', '--', module.path))
+  // Read the staged gitlink first, so a submodule added in this very commit can be
+  // indexed before the commit exists; fall back to HEAD for a committed tree.
+  const staged = /^160000 ([0-9a-f]{40}) \d\t/u.exec(git('ls-files', '-s', '--', module.path))
+  const recorded = staged ?? /^160000 commit ([0-9a-f]{40})\t/u.exec(git('ls-tree', 'HEAD', '--', module.path))
   if (recorded === null) {
-    throw new Error(`submodule ${module.path} is not recorded in HEAD; commit the parent repository before generating index.json`)
+    throw new Error(`submodule ${module.path} is not recorded in the index or in HEAD; run "git add ${module.path}" before generating index.json`)
   }
   const commit = recorded[1]
 

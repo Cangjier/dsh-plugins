@@ -46,6 +46,12 @@
           "zh": "通知与回信"
         }
       },
+      "network": {
+        "title": {
+          "en": "Network & remote access",
+          "zh": "网络与互联"
+        }
+      },
       "files": {
         "title": {
           "en": "Files & reading",
@@ -440,6 +446,44 @@
             "type": "git",
             "url": "https://github.com/Cangjier/dsh-mail-notify.git",
             "commit": "557c8d24ce98b02b3f38ca0278ee2dc1ab9c13be"
+          }
+        }
+      ]
+    },
+    {
+      "name": "@local/dsh-wireguard",
+      "title": {
+        "en": "WireGuard",
+        "zh": "WireGuard 组网"
+      },
+      "description": {
+        "en": "Turns a Windows or Linux machine into a WireGuard server, or joins it to one, from a panel in the Harness Web UI: start the service, hand out VPN addresses, and bring up local tunnels without changing the default internet route.",
+        "zh": "把 Windows 或 Linux 机器变成 WireGuard 服务器，或把它加入其中一个：在 Harness Web UI 面板里启动服务、分配 VPN 地址并拉通本地隧道，不改默认上网路由。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-wireguard"
+      },
+      "metadata": {
+        "category": "network",
+        "keywords": [
+          "wireguard",
+          "vpn",
+          "mesh",
+          "lan",
+          "组网",
+          "内网"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "0.2.0",
+          "publishTimestamp": 1794202878,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-wireguard.git",
+            "commit": "11200675990cb134b6cc5d55b31f7e038a06a264"
           }
         }
       ]

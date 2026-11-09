@@ -46,3 +46,7 @@
 	path = dsh-person-web
 	url = https://github.com/Cangjier/dsh-person-web.git
 	branch = main
+[submodule "dsh-wireguard"]
+	path = dsh-wireguard
+	url = https://github.com/Cangjier/dsh-wireguard.git
+	branch = main
