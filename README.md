@@ -17,8 +17,10 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 | [`dsh-tts/`](dsh-tts) | dsh-tts | 文字变声音，引擎留在插件之外：默认走 Edge 朗读（免 Key、带逐词时间戳），或把任意本地 TTS 命令行用模板接进来。一段话出「音频 + 时间戳侧车」，多人脚本出「每行一个文件 + 一条采样级时间线」。 |
 | [`dsh-video-audio/`](dsh-video-audio) | dsh-video-audio | 造声音、修声音、量声音。只做「同输入必得同输出」的事，且只报数字、不出判断。 |
 | [`video-factory/`](video-factory) | video-factory | 素材进，成片出。把图片、视频片段、音乐和一段文案变成一条能直接发布的 mp4；同样只提供确定性工具，流程与创作决策归 DSH。 |
+| [`dsh-person-web/`](dsh-person-web) | dsh-person-web | 把 DSH 部署成个人版 Web 服务：离线 Linux 包、80 端口密码门、公网域名（含 NAT 公网 IP 与 Cloudflare TLS）、Chrome Headless 微信扫码登录，并附一套 DSH 升级后按 Step 001–008 重新适配的文档与补丁源码。 |
 
-七个 `dsh-` 前缀的独立插件，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
+八个 `dsh-` 前缀的独立插件，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
+完整清单以 [`.gitmodules`](.gitmodules) 为准。
 
 > **`dsh-ffmpeg` 是后补进子模块清单的。** 它原先只是这个目录下的一个普通检出，
 > 所以 `git status` 里显示成未跟踪、`sync.ps1` 也遍历不到它。现在它是正经子模块，
