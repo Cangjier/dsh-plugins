@@ -30,3 +30,7 @@
 	path = dsh-screen-recorder
 	url = https://github.com/Cangjier/dsh-screen-recorder.git
 	branch = main
+[submodule "dsh-controller"]
+	path = dsh-controller
+	url = https://github.com/Cangjier/dsh-controller.git
+	branch = main
