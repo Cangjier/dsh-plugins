@@ -9,6 +9,9 @@
 # PowerShell 脚本用 CRLF，给 Windows 上的记事本和旧版 PowerShell 省事。
 *.ps1      text eol=crlf
 
+# 市场索引由 tools/market-index.mjs --check 逐字节比对，换行必须是 LF。
+index.json text eol=lf
+
 # 二进制，别碰。
 *.png binary
 *.jpg binary

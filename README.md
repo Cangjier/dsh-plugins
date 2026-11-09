@@ -10,26 +10,78 @@ DeepSeek Harness 插件集合，用 **git submodule** 把每个插件仓库聚�
 | 目录 | 插件 | 做什么 |
 | --- | --- | --- |
 | [`dsh-computer-use/`](dsh-computer-use) | dsh-computer-use | 把屏幕、鼠标、键盘与屏幕文字定位变成一等工具。插件只做确定性动作（看、点、打字、找字），判断全部归 DSH。仅 Windows。 |
+| [`dsh-controller/`](dsh-controller) | dsh-controller | 让 agent 控制 DSH 自身：会话、插件、宿主重启。先走 DSH 自己的 API，走不通才退回桌面自动化，并把走的是哪条路写进每个结果。 |
 | [`dsh-ffmpeg/`](dsh-ffmpeg) | dsh-ffmpeg | 把 ffmpeg 变成一套确定的、可验证的工具：转码、裁剪、抽帧、录屏，以及「一次录屏进，视频加语义结构出」。 |
+| [`dsh-keep-alive/`](dsh-keep-alive) | dsh-keep-alive | 对话开始时判定一次要不要保活；正常结束且同工作区没有别的对话在跑时，用完全相同的 user message 新建一条对话继续。 |
 | [`dsh-mail-notify/`](dsh-mail-notify) | dsh-mail-notify | 把 agent 的每一轮回答和你的邮箱接起来，双向：结束时发通知邮件，回复邮件又能起一轮新对话。 |
 | [`dsh-ocr/`](dsh-ocr) | dsh-ocr | 读出图里每一行的内容、置信度与像素框；反过来也能给一段文字，返回它在图上的中心点（可直接点击）。 |
+| [`dsh-person-web/`](dsh-person-web) | dsh-person-web | 把 DSH 部署成个人版 Web 服务：离线 Linux 包、80 端口密码门、公网域名（含 NAT 公网 IP 与 Cloudflare TLS）、Chrome Headless 微信扫码登录，并附一套 DSH 升级后按 Step 001–008 重新适配的文档与补丁源码。**这一条只有文档，不是运行时插件。** |
+| [`dsh-quick-read/`](dsh-quick-read) | dsh-quick-read | 读文件不再卡住：按 10 KB 分页读（路径写错时在所在目录容错找回同名文件），或按意图把大文件切成 50 KB 滑动窗口、逐窗输出结构化信息。 |
 | [`dsh-screen-recorder/`](dsh-screen-recorder) | dsh-screen-recorder | 录屏，然后把录屏读成结构化语义：时间轴分段 + OCR 文字 + 区域语义分割 + YOLO 目标检测 + 语音转文字，融成一份带证据的 JSON。 |
 | [`dsh-tts/`](dsh-tts) | dsh-tts | 文字变声音，引擎留在插件之外：默认走 Edge 朗读（免 Key、带逐词时间戳），或把任意本地 TTS 命令行用模板接进来。一段话出「音频 + 时间戳侧车」，多人脚本出「每行一个文件 + 一条采样级时间线」。 |
 | [`dsh-video-audio/`](dsh-video-audio) | dsh-video-audio | 造声音、修声音、量声音。只做「同输入必得同输出」的事，且只报数字、不出判断。 |
 | [`video-factory/`](video-factory) | video-factory | 素材进，成片出。把图片、视频片段、音乐和一段文案变成一条能直接发布的 mp4；同样只提供确定性工具，流程与创作决策归 DSH。 |
-| [`dsh-person-web/`](dsh-person-web) | dsh-person-web | 把 DSH 部署成个人版 Web 服务：离线 Linux 包、80 端口密码门、公网域名（含 NAT 公网 IP 与 Cloudflare TLS）、Chrome Headless 微信扫码登录，并附一套 DSH 升级后按 Step 001–008 重新适配的文档与补丁源码。 |
 
-八个 `dsh-` 前缀的独立插件，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
-完整清单以 [`.gitmodules`](.gitmodules) 为准。
+十一个 `dsh-` 前缀的子模块，加一个 `video-factory`（名字没有前缀，但同样是 DSH 插件）。
+其中 `dsh-person-web` 只提供文档（`package.json` 里没有 `dsh.bundle`，`dsh plugin add` 装不成插件），
+所以下一节的 [`index.json`](index.json) 收录的是其余**十一个可安装插件**。完整清单以 [`.gitmodules`](.gitmodules) 为准。
 
 > **`dsh-ffmpeg` 是后补进子模块清单的。** 它原先只是这个目录下的一个普通检出，
 > 所以 `git status` 里显示成未跟踪、`sync.ps1` 也遍历不到它。现在它是正经子模块，
 > `clone --recurse-submodules` 与 `./sync.ps1` 都会带上它。
 
+## 插件市场索引：`index.json`
+
+根目录的 [`index.json`](index.json) 是一份 **format 1** 的插件市场索引，也就是 dsh「自定义插件索引」
+读的那种文档：在 **插件 → 发现 → 管理索引源** 里填上它的地址，发现页就能列出、搜索并安装本仓库的每一个插件。
+它把上面每个可安装插件列成一条，字段全部来自仓库里的事实，不抓 npm、也不猜版本：
+
+| 字段 | 来源 |
+| --- | --- |
+| 包名、版本、是否仅 Windows | 该子模块的 `package.json`（`name` / `version` / `os`） |
+| 安装来源 `git+<仓库>#<commit>` | `.gitmodules` 里的仓库地址 + 父仓库记录的子模块指针（gitlink，也就是 `clone --recurse-submodules` 检出的那个 commit） |
+| `publishTimestamp` | 那个 commit 的提交时间（git 源的时间口径） |
+| 标题、简介、分类、关键词 | `tools/market-index.mjs` 里的 `DISPLAY`（人工维护） |
+
+所以发现页里装到的是**生成这份索引时钉住的那个 commit**，不是各插件 `main` 的最新提交；要跟新，
+先跑 `./sync.ps1` 把 pin 往前推，再重新生成索引。索引里的 commit 取的是父仓库记录的子模块指针（不是
+子模块里临时 checkout 到哪），因此和 `clone --recurse-submodules` 拿到的是同一套；`sync` 把这个指针
+对齐到插件仓库的 `origin/main`，pin 一旦推上去，每条都能按 commit 直接装。
+
+### 在 dsh 里用它
+
+1. 插件 → 实验性插件 → 启用「自定义插件索引」（`@deepseek-ai/dsh-experimental-plugin-market-bundle`）。
+2. 插件 → 发现 → 管理索引源，添加：
+
+   ```
+   https://raw.githubusercontent.com/Cangjier/dsh-plugins/main/index.json
+   ```
+
+   这个文件推到 `main` 之后该地址即生效。dsh 抓索引时**拒绝重定向**（`redirect: "error"`），所以要填
+   直接返回 200 的最终地址：别加尾斜杠，也别填会 301/307 的别名。
+3. 发现页按分类或关键词搜索即可；安装状态按包名匹配，与 profile 里已装的条目一一对应。
+
+### 重新生成
+
+```sh
+node tools/market-index.mjs          # 重写 index.json
+node tools/market-index.mjs --check  # 只检查是否落后：落后就退出码 1（适合 CI / 提交前）
+```
+
+生成器在写盘前按 format 1 的规则自检：包名唯一且合法、精确 SemVer、40 位小写 commit、Git URL 必须是
+无参数无片段的规范 https 地址、`category` / `label` 只能引用文档头声明过的 id、`publishTimestamp` 是
+[0, 10^11) 内的整数秒。另外三条约定：
+
+- **新增可安装的插件（声明了 `dsh.bundle`）却没在 `DISPLAY` 里登记，生成器直接报错**，不会悄悄漏掉它。
+- **不声明 `dsh.bundle` 的子模块会被跳过并打印出来**（`dsh-person-web` 就是这种：它是文档，不是插件），
+  因而不在索引里冒充一个装不上的条目。
+- format 1 是严格格式，一处不合法 dsh 会拒收整份文档。发布前可以用官方
+  `@deepseek-ai/dsh-plugin-market-index` 的 `parseMarketIndex` 复核（它同时给出每条版本的安装参数）。
+
 ## 共享依赖目录：`~/.dsh-plugins`
 
-七个插件都会下载二进制、模型和推理运行时。这些文件**不放在任何一个插件仓库里**，而是共用一个
-按用户主目录推导的目录：
+插件会下载二进制、模型和推理运行时（ffmpeg、OCR 引擎、YOLO 权重、YAMNet、ONNX 运行时）。这些文件
+**不放在任何一个插件仓库里**，而是共用一个按用户主目录推导的目录：
 
 ```
 ~/.dsh-plugins/

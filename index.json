@@ -1,0 +1,485 @@
+{
+  "format": 1,
+  "title": {
+    "en": "Cangjier's DSH Plugins",
+    "zh": "Cangjier 的 DSH 插件集"
+  },
+  "description": {
+    "en": "DeepSeek Harness plugins from this repository, each installed from its own Git repository at the pinned commit.",
+    "zh": "本仓库收录的 DeepSeek Harness 插件，每条都从各自的 Git 仓库按钉定的 commit 安装。"
+  },
+  "metadata": {
+    "categories": {
+      "agent": {
+        "title": {
+          "en": "Agent control",
+          "zh": "智能体控制"
+        }
+      },
+      "screen": {
+        "title": {
+          "en": "Screen & input",
+          "zh": "屏幕与输入"
+        }
+      },
+      "vision": {
+        "title": {
+          "en": "Vision & OCR",
+          "zh": "视觉与文字识别"
+        }
+      },
+      "media": {
+        "title": {
+          "en": "Video & image",
+          "zh": "视频与图像"
+        }
+      },
+      "audio": {
+        "title": {
+          "en": "Audio & speech",
+          "zh": "音频与语音"
+        }
+      },
+      "notify": {
+        "title": {
+          "en": "Notifications",
+          "zh": "通知与回信"
+        }
+      },
+      "files": {
+        "title": {
+          "en": "Files & reading",
+          "zh": "文件与阅读"
+        }
+      }
+    },
+    "labels": {
+      "windows-only": {
+        "title": {
+          "en": "Windows only",
+          "zh": "仅 Windows"
+        }
+      }
+    }
+  },
+  "plugins": [
+    {
+      "name": "dsh-controller",
+      "title": {
+        "en": "DSH Controller",
+        "zh": "DSH 控制"
+      },
+      "description": {
+        "en": "Lets the agent control DSH itself — conversations, plugins and the host — through DSH's own APIs first, falling back to desktop automation only when an API is unavailable.",
+        "zh": "让 agent 控制 DSH 自身（会话、插件、宿主）：先走 DSH 自己的 API，走不通才退回桌面自动化。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-controller"
+      },
+      "metadata": {
+        "category": "agent",
+        "keywords": [
+          "agent control",
+          "sessions",
+          "plugins",
+          "host restart",
+          "会话管理"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1794191960,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-controller.git",
+            "commit": "d4444af7462ab0c6f4381f5682ea1a2fe476d72b"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-keep-alive",
+      "title": {
+        "en": "Keep Alive",
+        "zh": "对话保活"
+      },
+      "description": {
+        "en": "Decides once per conversation whether it should be kept alive, then starts a new conversation with the same user message when a turn ends and no other conversation is running in the workspace.",
+        "zh": "每条对话开始时判定一次要不要保活；对话正常结束且同工作区没有别的对话在跑时，用完全相同的 user message 新建一条对话继续。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-keep-alive"
+      },
+      "metadata": {
+        "category": "agent",
+        "keywords": [
+          "continuation",
+          "auto resume",
+          "conversation",
+          "保活",
+          "接力"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "0.6.0",
+          "publishTimestamp": 1794192811,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-keep-alive.git",
+            "commit": "189f77b7af8d4f233bee85ee3a7a7e32e5e701a6"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-computer-use",
+      "title": {
+        "en": "Computer Use",
+        "zh": "电脑操作"
+      },
+      "description": {
+        "en": "Turns the screen, mouse, keyboard and on-screen text into first-class tools: screenshot, click, type, find text, and verify what happened. Single-step actions only — every decision stays with DSH.",
+        "zh": "把屏幕、鼠标、键盘与屏幕文字定位变成一等工具：截图、点击、打字、找字，并把每一步的结果验证回来。只提供单步动作，判断全部归 DSH。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-computer-use"
+      },
+      "metadata": {
+        "category": "screen",
+        "keywords": [
+          "desktop automation",
+          "mouse",
+          "keyboard",
+          "screenshot",
+          "ocr",
+          "桌面自动化"
+        ],
+        "labels": [
+          "windows-only"
+        ]
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1794191940,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-computer-use.git",
+            "commit": "dbeefa1d19f5c61a5b8fbb64f147df5b6b39de54"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-screen-recorder",
+      "title": {
+        "en": "Screen Recorder",
+        "zh": "录屏分析"
+      },
+      "description": {
+        "en": "Records the screen and reads the recording into structured semantics: timeline segments, OCR text, region segmentation, YOLO detection and speech transcription, fused into one JSON with evidence.",
+        "zh": "录屏，并把录屏读成结构化语义：时间轴分段 + OCR 文字 + 区域语义分割 + YOLO 目标检测 + 语音转文字，融成一份带证据的 JSON。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-screen-recorder"
+      },
+      "metadata": {
+        "category": "screen",
+        "keywords": [
+          "screen capture",
+          "recording",
+          "yolo",
+          "speech to text",
+          "录屏"
+        ],
+        "labels": [
+          "windows-only"
+        ]
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1794191948,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-screen-recorder.git",
+            "commit": "94ebaaec9272ec3da55a0e9482d8d383d8a596be"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-ocr",
+      "title": {
+        "en": "OCR",
+        "zh": "图文识别"
+      },
+      "description": {
+        "en": "Turns text in pixels into usable data: every line's content, confidence and pixel box, or the clickable center of a given string; also reads burned-in subtitles back from video frames.",
+        "zh": "把像素里的文字变成可用的数据：每行的内容、置信度与像素框，或按文字找出它在图上的可点击中心；也能回读画面上烧录的字幕。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-ocr"
+      },
+      "metadata": {
+        "category": "vision",
+        "keywords": [
+          "text recognition",
+          "subtitle",
+          "coordinates",
+          "文字识别",
+          "字幕"
+        ],
+        "labels": [
+          "windows-only"
+        ]
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1794191927,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-ocr.git",
+            "commit": "b1a2ac6be3cff888ab2dafdef408d516b3d22561"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-ffmpeg",
+      "title": {
+        "en": "FFmpeg",
+        "zh": "FFmpeg 工具"
+      },
+      "description": {
+        "en": "Makes ffmpeg a set of deterministic, verifiable tools: transcode, trim, extract frames, compose, record the screen, and turn one recording into a video plus its semantic structure.",
+        "zh": "把 ffmpeg 变成一套确定、可验证的工具：转码、裁剪、抽帧、拼合、录屏，以及一次录屏进、视频加语义结构出。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-ffmpeg"
+      },
+      "metadata": {
+        "category": "media",
+        "keywords": [
+          "video",
+          "transcode",
+          "screen recording",
+          "frames",
+          "视频处理"
+        ],
+        "labels": [
+          "windows-only"
+        ]
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1791164248,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-ffmpeg.git",
+            "commit": "bdd24aabf1a600adbe02252bf1916f2d57fa4cb5"
+          }
+        }
+      ]
+    },
+    {
+      "name": "video-factory",
+      "title": {
+        "en": "Video Factory",
+        "zh": "成片工厂"
+      },
+      "description": {
+        "en": "Materials in, finished video out: deterministic tools that render images, clips, music and a script into a publishable mp4; the flow and creative decisions stay with DSH.",
+        "zh": "素材进，成片出：把图片、视频片段、音乐和一段文案确定性渲染成可发布的 mp4；流程与创作决策全部归 DSH。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/video-factory"
+      },
+      "metadata": {
+        "category": "media",
+        "keywords": [
+          "video production",
+          "render",
+          "mp4",
+          "成片",
+          "视频制作"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "2.0.0",
+          "publishTimestamp": 1791164259,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/video-factory.git",
+            "commit": "eefb44eb226957ab7b8b2cef9d690904843eb0c8"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-tts",
+      "title": {
+        "en": "TTS",
+        "zh": "文字转语音"
+      },
+      "description": {
+        "en": "Turns text into speech with the engine kept outside the plugin: Edge reading by default (no key, word-level timestamps), or any local TTS command line through a template; multi-speaker scripts get one file per line plus a sample-accurate timeline.",
+        "zh": "文字变声音，引擎留在插件之外：默认走 Edge 朗读（免 Key、带逐词时间戳），或把任意本地 TTS 命令行用模板接进来；多人脚本每行一个文件 + 一条采样级时间线。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-tts"
+      },
+      "metadata": {
+        "category": "audio",
+        "keywords": [
+          "text to speech",
+          "voice",
+          "edge tts",
+          "timestamps",
+          "语音合成"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1791164268,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-tts.git",
+            "commit": "3548e780717f853aa07b6ed6bcd01ac7d5a79e11"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-video-audio",
+      "title": {
+        "en": "Video Audio",
+        "zh": "音频工具"
+      },
+      "description": {
+        "en": "Builds, repairs and measures audio: exact test signals, sample-accurate assembly, explicit repair chains with re-measurement, plus loudness, levels, clipping, noise, sync and audio-event measurements — numbers and files only.",
+        "zh": "造声音、修声音、量声音：参数完全指定的测试信号、采样级拼装、显式修复链与回测，以及响度、电平、削波、噪声、同步与声学事件测量——只出数字与文件。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-video-audio"
+      },
+      "metadata": {
+        "category": "audio",
+        "keywords": [
+          "audio",
+          "loudness",
+          "noise",
+          "recording",
+          "音频测量"
+        ],
+        "labels": [
+          "windows-only"
+        ]
+      },
+      "versions": [
+        {
+          "version": "1.0.0",
+          "publishTimestamp": 1791164258,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-video-audio.git",
+            "commit": "fc86024403371a9004a710e7c0744e9d892bef16"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-mail-notify",
+      "title": {
+        "en": "Mail Notify",
+        "zh": "邮件通知"
+      },
+      "description": {
+        "en": "Connects every agent turn to your mailbox, both ways: a notification mail when a turn ends or the agent asks a question, and replying to that mail continues the conversation.",
+        "zh": "把 agent 的每一轮回答和你的邮箱接起来，双向：结束时（或提问时）发通知邮件，回复邮件又能接着原来的上下文再起一轮。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-mail-notify"
+      },
+      "metadata": {
+        "category": "notify",
+        "keywords": [
+          "email",
+          "smtp",
+          "imap",
+          "notification",
+          "邮件通知"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1792942025,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-mail-notify.git",
+            "commit": "557c8d24ce98b02b3f38ca0278ee2dc1ab9c13be"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsh-quick-read",
+      "title": {
+        "en": "Quick Read",
+        "zh": "快速读取"
+      },
+      "description": {
+        "en": "Two tools for reading files without getting stuck: byte-paged text reading that recovers from a wrong path, and intent-driven structural summaries of large files through sliding windows.",
+        "zh": "两个让读文件不再卡住的工具：按字节分页读文本（路径写错时在所在目录容错找回），以及按意图把大文件切成滑动窗口、逐窗输出结构化信息。"
+      },
+      "author": "Cangjier",
+      "repository": {
+        "url": "https://github.com/Cangjier/dsh-quick-read"
+      },
+      "metadata": {
+        "category": "files",
+        "keywords": [
+          "read file",
+          "pagination",
+          "large file",
+          "structure",
+          "分页读取"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "0.1.0",
+          "publishTimestamp": 1794192937,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/Cangjier/dsh-quick-read.git",
+            "commit": "672c613a26ae8dff938c17e909ed60dcec54cc5b"
+          }
+        }
+      ]
+    }
+  ]
+}
