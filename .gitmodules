@@ -34,3 +34,11 @@
 	path = dsh-controller
 	url = https://github.com/Cangjier/dsh-controller.git
 	branch = main
+[submodule "dsh-keep-alive"]
+	path = dsh-keep-alive
+	url = https://github.com/Cangjier/dsh-keep-alive.git
+	branch = main
+[submodule "dsh-quick-read"]
+	path = dsh-quick-read
+	url = https://github.com/Cangjier/dsh-quick-read.git
+	branch = main
