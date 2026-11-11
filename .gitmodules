@@ -42,8 +42,8 @@
 	path = dsh-quick-read
 	url = https://github.com/Cangjier/dsh-quick-read.git
 	branch = main
-[submodule "dsh-person-web"]
-	path = dsh-person-web
+[submodule "dsh-mesh"]
+	path = dsh-mesh
 	url = https://github.com/Cangjier/dsh-person-web.git
 	branch = main
 [submodule "dsh-wireguard"]
