@@ -46,7 +46,3 @@
 	path = dsh-mesh
 	url = https://github.com/Cangjier/dsh-mesh.git
 	branch = main
-[submodule "dsh-wireguard"]
-	path = dsh-wireguard
-	url = https://github.com/Cangjier/dsh-wireguard.git
-	branch = main
